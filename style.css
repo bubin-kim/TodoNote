@@ -1,0 +1,183 @@
+:root {
+  --paper: #fff8b8;
+  --paper-bar: #f5e97a;
+  --line: #e3d77a;
+  --margin-line: #e88a8a;
+  --ink: #3b3a30;
+  --ink-done: #9a9580;
+  --accent: #d9534f;
+  --row-h: 30px;
+  --radius: 10px;
+  --alpha: 100%;
+  --paper-fill: color-mix(in srgb, var(--paper) var(--alpha), transparent);
+  --bar-fill: color-mix(in srgb, var(--paper-bar) var(--alpha), transparent);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: transparent; }
+body { font-family: -apple-system, "Apple SD Gothic Neo", sans-serif; color: var(--ink); }
+
+.note {
+  height: 100%; display: flex; flex-direction: column; position: relative;
+  background: var(--paper-fill); border-radius: var(--radius); overflow: hidden;
+}
+.bar {
+  -webkit-app-region: drag;
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--bar-fill); padding: 6px 10px; flex: none;
+  font-weight: 700; font-size: 13px; letter-spacing: .08em;
+}
+.bar small { font-weight: 400; opacity: .6; margin-left: 4px; }
+.btns { -webkit-app-region: no-drag; display: flex; gap: 2px; }
+.btns button {
+  border: 0; background: none; cursor: pointer; font-size: 13px; color: var(--ink);
+  opacity: .45; padding: 2px 5px; border-radius: 4px;
+}
+.btns button:hover, .btns button.on { opacity: 1; }
+
+#swatches { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 10px; background: var(--bar-fill); border-top: 1px solid var(--line); flex: none; }
+#swatches[hidden] { display: none; }
+#swatches button {
+  width: 18px; height: 18px; border-radius: 50%; padding: 0; cursor: pointer;
+  border: 2px solid transparent; background: var(--sw);
+  box-shadow: 0 0 0 1px var(--ink-done);
+}
+#swatches button.sel { border-color: var(--ink); }
+
+ul {
+  list-style: none; margin: 0; padding: 0; flex: 1; overflow-y: auto;
+  /* 줄 노트 가로줄 */
+  background-image: linear-gradient(to bottom, transparent calc(var(--row-h) - 1px), var(--line) calc(var(--row-h) - 1px));
+  background-size: 100% var(--row-h);
+  background-attachment: local;
+  position: relative;
+}
+ul::before { /* 왼쪽 빨간 세로줄 */
+  content: ""; position: absolute; left: 34px; top: 0; bottom: 0;
+  width: 1px; background: var(--margin-line); opacity: .6; pointer-events: none;
+}
+li {
+  display: flex; align-items: center; gap: 8px;
+  min-height: var(--row-h); padding: 0 10px 0 10px; font-size: 14px;
+}
+li input[type=checkbox] {
+  appearance: none; width: 16px; height: 16px; margin: 0; flex: none;
+  border: 1.5px solid var(--ink); border-radius: 4px; background: var(--paper);
+  cursor: pointer; display: grid; place-content: center;
+}
+li input[type=checkbox]:checked { background: var(--accent); border-color: var(--accent); }
+li input[type=checkbox]:checked::after { content: "✓"; color: #fff; font-size: 12px; line-height: 1; }
+li .text { flex: 1; line-height: var(--row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-left: 10px; cursor: text; }
+li.done .text { text-decoration: line-through; color: var(--ink-done); }
+li .del { border: 0; background: none; cursor: pointer; opacity: 0; color: var(--ink); }
+li:hover .del { opacity: .5; }
+#swatches input[type=color] {
+  appearance: none; width: 18px; height: 18px; padding: 0; margin: 0; border: 0; border-radius: 50%;
+  background: conic-gradient(#f66, #fc6, #9f6, #6fc, #69f, #c6f, #f66); cursor: pointer;
+  box-shadow: 0 0 0 1px var(--ink-done);
+}
+#swatches input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+#swatches input[type=color]::-webkit-color-swatch { border: 2px solid var(--paper); border-radius: 50%; }
+li .del:hover { opacity: 1; }
+li .edit { flex: 1; font: inherit; border: 0; background: transparent; outline: 1px dashed var(--line); margin-left: 10px; color: var(--ink); }
+
+#add { flex: none; border-top: 1px solid var(--line); background: var(--paper-fill); }
+#new {
+  width: 100%; border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px;
+  padding: 8px 10px 8px 54px; color: var(--ink);
+}
+#new::placeholder { color: var(--ink-done); }
+
+/* 집중 타이머 */
+.timer { -webkit-app-region: no-drag; display: flex; align-items: center; gap: 1px; font-variant-numeric: tabular-nums; }
+.timer button {
+  border: 0; background: none; cursor: pointer; color: var(--ink); font: inherit; font-size: 12px;
+  padding: 2px 4px; border-radius: 4px; opacity: .75; letter-spacing: 0;
+}
+.timer button:hover { opacity: 1; background: var(--line); }
+.timer button[hidden] { display: none; }
+.timer.running #t-time { color: var(--accent); font-weight: 700; opacity: 1; }
+@media (max-width: 340px) { .bar .word { display: none; } }
+
+/* 투명도 슬라이더 */
+.alpha-row { flex-basis: 100%; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink); }
+.alpha-row input[type=range] { flex: 1; accent-color: var(--accent); height: 14px; margin: 0; }
+.alpha-row output { width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* 접기: 헤더만 남김 */
+.note.collapsed #swatches, .note.collapsed #list, .note.collapsed #add { display: none; }
+
+/* 크기 조절 손잡이 (프레임 없는 창이라 직접 구현) */
+.rz { position: fixed; z-index: 100; -webkit-app-region: no-drag; }
+.rz-n, .rz-s { left: 12px; right: 12px; height: 7px; cursor: ns-resize; }
+.rz-n { top: 0; } .rz-s { bottom: 0; }
+.rz-e, .rz-w { top: 12px; bottom: 12px; width: 7px; cursor: ew-resize; }
+.rz-e { right: 0; } .rz-w { left: 0; }
+.rz-ne, .rz-nw, .rz-se, .rz-sw { width: 14px; height: 14px; }
+.rz-ne { top: 0; right: 0; cursor: nesw-resize; } .rz-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+.rz-nw { top: 0; left: 0; cursor: nwse-resize; } .rz-se { bottom: 0; right: 0; cursor: nwse-resize; }
+body:has(.note.collapsed) :is(.rz-n, .rz-s, .rz-ne, .rz-nw, .rz-se, .rz-sw) { display: none; }
+body:has(.note.collapsed) :is(.rz-e, .rz-w) { top: 0; bottom: 0; }
+
+/* 순서 바꾸기 */
+li { user-select: none; }
+li .grip { cursor: grab; opacity: 0; font-size: 15px; line-height: 1; padding: 0 2px; }
+li:hover .grip { opacity: .45; }
+li .grip:hover { opacity: 1; }
+li.dragging { background: var(--bar-fill); box-shadow: 0 2px 8px color-mix(in srgb, var(--ink) 25%, transparent); position: relative; z-index: 5; }
+body.dragging-now, body.dragging-now * { cursor: grabbing !important; }
+
+/* 마감일 */
+:root { --late: #d9534f; }
+li .due-wrap, #add .due-wrap { position: relative; display: inline-flex; flex: none; }
+li .due-wrap input, #add .due-wrap input { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; padding: 0; }
+li .due, #add button {
+  border: 0; background: none; cursor: pointer; color: var(--ink); font: inherit; font-size: 12px;
+  padding: 1px 5px; border-radius: 4px; font-variant-numeric: tabular-nums;
+}
+li .due { background: color-mix(in srgb, var(--ink) 10%, transparent); }
+li .due:hover, #add button:hover { background: var(--line); }
+li .due.empty { background: none; opacity: 0; }
+li:hover .due.empty { opacity: .45; }
+li .due.today { color: var(--accent); font-weight: 700; }
+li .due.late { color: var(--late); font-weight: 700; }
+li.done .due { opacity: .5; font-weight: 400; color: var(--ink-done); }
+#add { display: flex; align-items: center; gap: 2px; padding-right: 8px; }
+#add #new { flex: 1; min-width: 0; }
+#add button { opacity: .5; font-size: 13px; }
+#add button.on, #add button:hover { opacity: 1; }
+#add #dsort.on { color: var(--accent); font-weight: 700; }
+body.dsort li .grip { display: none; }
+
+/* 원형 시계 패널 */
+.note.alarm::after { content: ""; position: absolute; inset: 0; background: var(--late); pointer-events: none; z-index: 50; animation: flashfull .6s ease-in-out 6; }
+@keyframes flashfull { 0%, 100% { opacity: 0; } 50% { opacity: .55; } }
+#clock { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 10px 8px; background: var(--bar-fill); border-top: 1px solid var(--line); }
+#clock[hidden] { display: none; }
+.note.collapsed #clock { display: none; }
+.dial { position: relative; width: 124px; height: 124px; }
+.dial svg { width: 100%; height: 100%; cursor: grab; touch-action: none; }
+#clock.locked .dial svg { cursor: default; }
+.dial .face { fill: var(--paper); stroke: var(--ink-done); stroke-width: 1.2; }
+.dial .slice { fill: var(--late); opacity: .88; }
+.dial #ticks line { stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; opacity: .55; }
+.c-time {
+  position: absolute; inset: 0; display: grid; place-content: center; pointer-events: none;
+  font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; color: var(--ink);
+  text-shadow: 0 0 4px var(--paper), 0 0 2px var(--paper);
+}
+.c-go {
+  position: absolute; left: 50%; top: 50%; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%;
+  border: 0; background: var(--ink); color: var(--paper); font-size: 15px; cursor: pointer;
+  opacity: 0; transition: opacity .12s; display: grid; place-content: center; padding: 0;
+}
+.dial:hover .c-go { opacity: .92; }
+.dial:hover .c-time { opacity: .0; }
+.presets-row { display: flex; align-items: center; gap: 6px; }
+.presets { display: flex; gap: 4px; }
+.presets .pre { border: 0; cursor: pointer; font: inherit; font-size: 12px; min-width: 26px; padding: 2px 6px; border-radius: 10px; color: var(--ink); background: color-mix(in srgb, var(--ink) 10%, transparent); font-variant-numeric: tabular-nums; }
+.presets .pre:hover { background: var(--line); }
+.presets .pre.on { background: var(--accent); color: var(--paper); font-weight: 700; }
+.pre-edit { width: 38px; font: inherit; font-size: 12px; text-align: center; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); padding: 2px 0; }
+.p-edit { border: 0; background: none; cursor: pointer; color: var(--ink); opacity: .55; font-size: 13px; }
+.p-edit:hover { opacity: 1; }

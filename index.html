@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'">
+<title>할 일 노트</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="note">
+    <header class="bar" id="bar">
+      <span class="title"><span class="word">TODO</span> <small id="count"></small></span>
+      <span class="timer" id="timer">
+        <button id="t-go" title="시작 / 일시정지">▶</button>
+        <button id="t-time" title="클릭: 시간 바꾸기">25:00</button>
+        <button id="t-reset" title="리셋" hidden>↺</button>
+      </span>
+      <span class="btns">
+        <button id="palette" title="색상 변경">🎨</button>
+        <button id="pin" title="항상 위에 고정" class="on">📌</button>
+        <button id="sort" title="완료 항목 위치">⬇️</button>
+        <button id="clear" title="완료 항목 지우기">🧹</button>
+        <button id="fold" title="접기 / 펴기">▴</button>
+        <button id="close" title="닫기">✕</button>
+      </span>
+    </header>
+    <div id="clock" hidden>
+      <div class="dial">
+        <svg id="dial-svg" viewBox="-50 -50 100 100" aria-label="원형 타이머">
+          <circle class="face" r="46"/>
+          <path id="slice" class="slice"/>
+          <g id="ticks"></g>
+        </svg>
+        <div id="c-time" class="c-time">25:00</div>
+        <button id="c-go" class="c-go" title="시작 / 일시정지">▶</button>
+      </div>
+      <div class="presets-row">
+        <div id="presets" class="presets"></div>
+        <button id="p-edit" class="p-edit" title="프리셋 시간 편집">✎</button>
+      </div>
+    </div>
+    <div id="swatches" hidden></div>
+    <ul id="list"></ul>
+    <form id="add">
+      <input id="new" placeholder="+ 할 일 추가" autocomplete="off">
+      <span class="due-wrap"><button type="button" id="new-due" title="새 항목의 마감일">📅</button><input type="date" id="new-due-input" tabindex="-1"></span>
+      <button type="button" id="dsort" title="마감일순 정렬 (끔)">⇅</button>
+    </form>
+  </div>
+  <div class="rz rz-n" data-dir="n"></div><div class="rz rz-s" data-dir="s"></div>
+  <div class="rz rz-e" data-dir="e"></div><div class="rz rz-w" data-dir="w"></div>
+  <div class="rz rz-ne" data-dir="ne"></div><div class="rz rz-nw" data-dir="nw"></div>
+  <div class="rz rz-se" data-dir="se"></div><div class="rz rz-sw" data-dir="sw"></div>
+  <script src="renderer.js"></script>
+</body>
+</html>
